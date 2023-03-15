@@ -5,16 +5,17 @@ const fs = require('fs').promises //helps us get access to promises when dealing
 //import our database [x]
 //import the model that we are trying to import our data into [x]
 const {db} = require('./db')
-const { Show, User } = require('./models/index')
+const { Show, User } = require("./models/index")
 
-
+console.log(Show)
+console.log(User)
 //write our seed function -> take our json file, create rows with our data into it
 const seed = async () => {
 
     await db.sync({ force: true }); // clear out database + tables
 
     const showSeedPath = path.join(__dirname, 'shows.json'); //get the path to Show.json file
-    const userSeedPath = path.join(__dirname, 'users.json')
+    const userSeedPath = path.join(__dirname,  'users.json')
 
 
     const buffer = await fs.readFile(showSeedPath); //asynchronously reads the content in this file
@@ -24,9 +25,10 @@ const seed = async () => {
     const {usersData} = JSON.parse(String(userBuffer));
 
 
-    const ShowPromises = showsData.map(show => Show.create(show)); //creates Show and puts it into our Show table
+    const ShowPromises = showsData.map(show =>  Show.create(show)); //creates Show and puts it into our Show table
     const UserPromises = usersData.map(user => User.create(user));
-
+	console.log(ShowPromises)
+	console.log(UserPromises)
                                         //Show.create({'name': 'Tony', 'age': 25})
     await Promise.all(ShowPromises); // The Promise.all() method takes an iterable of promises as an input, and returns a single Promise that resolves to an array of the results of the input promises.
     await Promise.all(UserPromises)
@@ -34,5 +36,6 @@ const seed = async () => {
     console.log("Shows and User database info populated!")
 }
 
+seed();
 //export my seed function
 module.exports = seed;
